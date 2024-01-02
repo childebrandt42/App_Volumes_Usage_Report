@@ -1,0 +1,147 @@
+<#
+.SYNOPSIS
+    App Volumes Usage Report
+.DESCRIPTION
+    App Volumes Usage Report.
+    This script will generate a report of App Volumes usage, for the following portions
+    - User Usage
+    - Package Usage
+    - Writable volume Usage
+.NOTES
+    Version:          1.0.0
+    Author:           Chris Hildebrandt
+    twitter:          @childebrandt42
+    Date Created:     1/2/2024
+    Date Updated:     1/2/2024
+#>
+
+#---------------------------------------------------------------------------------------------#
+#                                  Script Varribles                                           #
+#---------------------------------------------------------------------------------------------#
+
+# App Volumes Server FQDN
+$AppVolServer = "AppVolumes Server FQDN"
+
+# App Volumes Admin Creds
+$Creds = Get-Credential -Message "Enter App Volumes Admin Creds"
+
+# Report Save Location
+$ReportLocation = "C:\AppVolumes\Reports"
+
+# ReportName
+$ReportName = "AppVolumesUsageReport"
+
+# Export as Excel or CSV? If Excel, install ImportExcel Module, if CSV, it will create 3 CSV files. 
+$ReportType = "Excel" # Excel or CSV
+
+# CSV User Report Name
+$UserReportName = "UserReport"
+
+# CSV Package Report Name
+$PackageReportName = "PackageReport"
+
+# CSV Writables Report Name
+$WritableReportName = "WritableReport"
+
+# Report Date (Do not change)
+$ReportDate = Get-Date -Format MM-dd-yyyy
+
+#---------------------------------------------------------------------------------------------#
+#                                  Script Body                                                #
+#---------------------------------------------------------------------------------------------#
+
+# Import Modules
+If($ReportType -eq 'Excel'){
+    if(!(Get-Module -ListAvailable -Name ImportExcel)){
+        Install-Module -Name ImportExcel -Force
+        Import-Module ImportExcel
+    }else{
+        Import-Module ImportExcel
+    }
+}
+
+# Check if Report Location Exists if not create it
+if(!(Test-Path $ReportLocation)){
+    New-Item -ItemType Directory -Path $ReportLocation
+}
+
+# Set Up Creds Header for App Volumes
+$RESTAPIUser = $Creds.UserName
+$RESTAPIPassword = $Creds.GetNetworkCredential().password
+
+$AppVolRestCreds = @{
+    username = $RESTAPIUser
+    password = $RESTAPIPassword
+}
+
+# Create your App Volumes Session
+$AppVolServerRest = Invoke-RestMethod -SessionVariable SourceServerSession -Method Post -Uri "https://$AppVolServer/cv_api/sessions" -Body $AppVolRestCreds
+
+# Get your App Volumes Users Data
+if ($PSVersionTable.PSEdition -eq 'Core') {
+    $ActiveDirectoryUsers = Invoke-RestMethod -SkipCertificateCheck -WebSession $SourceServerSession -Method Get -Uri "https://$AppVolServer/cv_api/users"
+} else {$ActiveDirectoryUsers = Invoke-RestMethod -WebSession $SourceServerSession -Method Get -Uri "https://$AppVolServer/cv_api/users"}
+
+#$ActiveDirectoryUsers | Select-Object UPN,Logins,last_login_human | Sort-Object UPN
+$ADUserExport = foreach($ActiveDirectoryUser in $ActiveDirectoryUsers){
+    [PSCustomObject]@{
+        'User Name' = $ActiveDirectoryUser.upn
+        'Total Logins' = $ActiveDirectoryUser.logins
+        'Last Login Date' = $ActiveDirectoryUser.last_login_human
+    }
+}
+
+# Export your Users Data
+if($ReportType -eq 'Excel'){
+    $ADUserExport | Export-Excel -Path "$ReportLocation\$ReportName-$ReportDate.xlsx" -WorksheetName 'User Usage Report'
+}else{
+    $ADUserExport | Export-Csv -Path "$ReportLocation\$UserReportName-$(Get-Date -Format MM-dd-yyyy).csv" -NoTypeInformation
+}
+
+# Get your App Volumes Packages Data
+if ($PSVersionTable.PSEdition -eq 'Core') {
+    $AppPackages = Invoke-RestMethod -SkipCertificateCheck -WebSession $SourceServerSession -Method Get -Uri "https://$AppVolServer/app_volumes/app_packages?include=app_markers%2Clifecycle_stage%2Cbase_app_package%2Capp_product"
+} else {$AppPackages = Invoke-RestMethod -WebSession $SourceServerSession -Method get -Uri "https://$AppVolServer/app_volumes/app_packages?include=app_markers%2Clifecycle_stage%2Cbase_app_package%2Capp_product"}
+
+$AppPackageExport = ''
+$AppPackageExport = foreach($AppPackage in $AppPackages.data){
+    $LastMountRaw = $AppPackage.mounted_at
+    if(!$LastMountRaw){
+        $LastMount = 'Never'
+    }else{
+        $LastMount = $LastMountRaw.Substring(0, $LastMountRaw.IndexOf("T"))
+    }
+    [PSCustomObject]@{
+        'Package Name' = $AppPackage.Name
+        'Total Usage' = $AppPackage.total_use_count
+        'Last Used' = $LastMount
+    }
+}
+
+# Export your Packages Data
+if($ReportType -eq 'Excel'){
+    $AppPackageExport | Export-Excel -Path "$ReportLocation\$ReportName-$ReportDate.xlsx" -WorksheetName 'Package Usage Report' -Append
+}else{
+    $AppPackageExport | Export-Csv -Path "$ReportLocation\$PackageReportName-$(Get-Date -Format MM-dd-yyyy).csv" -NoTypeInformation
+}
+
+# Get your App Volumes Writables Data
+if ($PSVersionTable.PSEdition -eq 'Core') {
+    $Writables = Invoke-RestMethod -SkipCertificateCheck -WebSession $SourceServerSession -Method Get -Uri "https://$AppVolServer/app_volumes/writables"
+} else {$Writables = Invoke-RestMethod -WebSession $SourceServerSession -Method Get -Uri "https://$AppVolServer/app_volumes/writables"}
+
+$WriteableExport = foreach($Writable in $Writables.data){
+    [PSCustomObject]@{
+        'Writable Name' = $Writable.Name
+        'Owner Name' = $Writable.owner_name
+        'Num of Times Mounted' = $Writable.mount_count
+        'Date Last Mounted' = $Writable.mounted_at_human
+    }
+}
+
+# Export your Writables Data
+if($ReportType -eq 'Excel'){
+    $WriteableExport | Export-Excel -Path "$ReportLocation\$ReportName-$ReportDate.xlsx" -WorksheetName 'Writable Usage Report' -Append
+}else{
+    $WriteableExport | Export-Csv -Path "$ReportLocation\$WritableReportName-$(Get-Date -Format MM-dd-yyyy).csv" -NoTypeInformation
+}
