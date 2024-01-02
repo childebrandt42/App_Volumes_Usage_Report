@@ -95,7 +95,7 @@ $ADUserExport = foreach($ActiveDirectoryUser in $ActiveDirectoryUsers){
 if($ReportType -eq 'Excel'){
     $ADUserExport | Export-Excel -Path "$ReportLocation\$ReportName-$ReportDate.xlsx" -WorksheetName 'User Usage Report'
 }else{
-    $ADUserExport | Export-Csv -Path "$ReportLocation\$UserReportName-$(Get-Date -Format MM-dd-yyyy).csv" -NoTypeInformation
+    $ADUserExport | Export-Csv -Path "$ReportLocation\$UserReportName-$ReportDate.csv" -NoTypeInformation
 }
 
 # Get your App Volumes Packages Data
@@ -122,7 +122,7 @@ $AppPackageExport = foreach($AppPackage in $AppPackages.data){
 if($ReportType -eq 'Excel'){
     $AppPackageExport | Export-Excel -Path "$ReportLocation\$ReportName-$ReportDate.xlsx" -WorksheetName 'Package Usage Report' -Append
 }else{
-    $AppPackageExport | Export-Csv -Path "$ReportLocation\$PackageReportName-$(Get-Date -Format MM-dd-yyyy).csv" -NoTypeInformation
+    $AppPackageExport | Export-Csv -Path "$ReportLocation\$PackageReportName-$ReportDate.csv" -NoTypeInformation
 }
 
 # Get your App Volumes Writables Data
@@ -143,5 +143,5 @@ $WriteableExport = foreach($Writable in $Writables.data){
 if($ReportType -eq 'Excel'){
     $WriteableExport | Export-Excel -Path "$ReportLocation\$ReportName-$ReportDate.xlsx" -WorksheetName 'Writable Usage Report' -Append
 }else{
-    $WriteableExport | Export-Csv -Path "$ReportLocation\$WritableReportName-$(Get-Date -Format MM-dd-yyyy).csv" -NoTypeInformation
+    $WriteableExport | Export-Csv -Path "$ReportLocation\$WritableReportName-$ReportDate.csv" -NoTypeInformation
 }
