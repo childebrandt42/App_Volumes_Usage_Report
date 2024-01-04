@@ -105,14 +105,24 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
 
 $AppPackageExport = ''
 $AppPackageExport = foreach($AppPackage in $AppPackages.data){
+    $LastMount = ''
+    $CurrentState = ''
     $LastMountRaw = $AppPackage.mounted_at
     if(!$LastMountRaw){
         $LastMount = 'Never'
     }else{
         $LastMount = $LastMountRaw.Substring(0, $LastMountRaw.IndexOf("T"))
     }
+    If($AppPackage.app_markers.name){
+        $CurrentState = "Current"
+    }else{
+        $CurrentState = "Not Current" 
+    }
+
     [PSCustomObject]@{
         'Package Name' = $AppPackage.Name
+        'Stage' = $AppPackage.lifecycle_stage.name
+        'Current State' = $CurrentState
         'Total Usage' = $AppPackage.total_use_count
         'Last Used' = $LastMount
     }
