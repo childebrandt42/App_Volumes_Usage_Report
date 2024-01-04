@@ -26,7 +26,7 @@ Notepad++ 8.5.8 | Published | Current | 3 | 2023-11-17
 Zoom 5.16.0 | Published | Current | 175 | 2024-01-03
 WinSCP 6.1.2 | Published | Current | 1 | 2023-11-17
 VLC 3.0.30 | Published | Current | 2 | 2023-11-17
-Open Office | 4.1.1.4 | Published | Current | 1 | 2023-11-17
+Open Office 4.1.1.4 | Published | Current | 1 | 2023-11-17
 GreenShot 1.2.10.6 | Published | Current | 1 | 2023-11-17
 Putty 0.79 | Published | Current | 1 | 2023-11-17
 7Zip 2301 | Published | Current | 1 | 2023-11-17
