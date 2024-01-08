@@ -1,5 +1,58 @@
-# App_Volumes_Usage_Report
-App Volumes Detailed Usage Report
+<p align="center">
+    <a href="https://twitter.com/childebrandt42" alt="Twitter">
+            <img src="https://img.shields.io/twitter/follow/Childebrandt42.svg?style=social"/></a>
+</p>
+<!-- ********** DO NOT EDIT THESE LINKS ********** -->
+
+# VMware App Volumes Usage Report
+
+VMware App Volumes Usage report which works in conjunction with [ImportExcel Powershell Module](https://github.com/dfinke/ImportExcel).
+
+Please refer to my blog [Blog Website](https://www.childebrandt42.blog) for more detailed information about this project. 
+
+Blog post for this project [Blog Post](https://childebrandt42.blog/2024/02/13/app-volumes-usage-report-decoding-the-signals-for-retiring-old-applications-with-precision)
+
+# :books: Sample Reports
+
+## Sample Report
+Sample App Volumes Writable Usage Report CSV: [Sample-PackageReport-CSV.csv](https://htmlpreview.github.io/?https://github.com/childebrandt42/App_Volumes_Usage_Report/main/Samples/Sample-PackageReport-CSV.csv)
+
+Sample App Volumes User Usage Report CSV: [Sample-UserReport-CSV.csv](https://htmlpreview.github.io/?https://github.com/childebrandt42/App_Volumes_Usage_Report/main/Samples/Sample-UserReport-CSV.csv)
+
+Sample App Volumes Writable Usage Report CSV: [Sample-WritableReport-CSV.csv](https://htmlpreview.github.io/?https://github.com/childebrandt42/App_Volumes_Usage_Report/main/Samples/Sample-WritableReport-CSV.csv)
+
+
+Sample App Volumes Usage Report Excel format: [Sample-AppVolumesUsageReport-Excel.xlsx](https://htmlpreview.github.io/?https://github.com/childebrandt42/App_Volumes_Usage_Report/main/Samples/Sample-AppVolumesUsageReport-Excel.xlsx)
+
+# :beginner: Getting Started
+Below are the instructions on how to run the VMware Horizon Usage Report
+
+### PowerShell
+This report is compatible with the following PowerShell versions;
+
+<!-- ********** Update supported PowerShell versions ********** -->
+| Windows PowerShell 5.1 |     PowerShell 7    |
+|:----------------------:|:--------------------:|
+|   :white_check_mark:   | :white_check_mark: |
+## :wrench: System Requirements
+<!-- ********** Update system requirements ********** -->
+PowerShell 5.1 or PowerShell 7, and the following PowerShell modules are required for generating a VMware Horizon Usage Report.
+
+- [Import Excel Module](https://www.powershellgallery.com/packages/ImportExcel/)
+
+## :package: Instructions
+
+Download script
+
+Fill in the Varribles
+$AppVolServer = AppVolumes Server FQDN
+$Creds = Enter your Creds for App Volumes server
+$ReportLocation = Report Save Location
+$ReportName = Report name if in Excel Format
+$ReportType = Report type
+$UserReportName = User Report Name if CSV format is used
+$PackageReportName = Package Report Name if CSV format is used
+$WritableReportName = Writable Report Name if CSV format is used
 
 Report will work in both CSV or Excel exports, If you choose CSV it will create 3 seperate files, and Excel will create 1 Excel with 3 workbooks.
 
