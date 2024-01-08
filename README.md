@@ -45,18 +45,19 @@ PowerShell 5.1 or PowerShell 7, and the following PowerShell modules are require
 Download script
 
 Fill in the Varribles
-$AppVolServer = AppVolumes Server FQDN
-$Creds = Enter your Creds for App Volumes server
-$ReportLocation = Report Save Location
-$ReportName = Report name if in Excel Format
-$ReportType = Report type
-$UserReportName = User Report Name if CSV format is used
-$PackageReportName = Package Report Name if CSV format is used
-$WritableReportName = Writable Report Name if CSV format is used
+* $AppVolServer = AppVolumes Server FQDN
+* $Creds = Enter your Creds for App Volumes server
+* $ReportLocation = Report Save Location
+* $ReportName = Report name if in Excel Format
+* $ReportType = Report type
+* $UserReportName = User Report Name if CSV format is used
+* $PackageReportName = Package Report Name if CSV format is used
+* $WritableReportName = Writable Report Name if CSV format is used
 
 Report will work in both CSV or Excel exports, If you choose CSV it will create 3 seperate files, and Excel will create 1 Excel with 3 workbooks.
 
 This report will generate User Usage Reports, Package Usage Report, and also Writable Usage Report.
+
 
 User Usage Report:
 User Name | Total Logins | Last Login Date
@@ -67,6 +68,7 @@ CHRISLAB\Test2 | 336 | Jan 02 2024 08:23PM
 CHRISLAB\Test3 | 333 | Jan 02 2024 06:23PM
 CHRISLAB\Test4 | 333 | Jan 02 2024 06:53PM
 CHRISLAB\Test5 | 332 | Jan 02 2024 07:53PM
+
 
 Package Usage Report:
 Package Name | Stage | Current State | Total Usage | Last Used
@@ -87,6 +89,7 @@ Blender 4.0.1 | Published | Current | 1 | 2023-11-17
 Wireshark 4.2.0 | Published | Current | 1 | 2023-11-17
 Office 365, Teams, OneDrive | Published | Current | 510 | 2024-01-03
 Office 365, Teams, OneDrive-update | New | Not Current | 0 | Never
+
 
 Writable Usage Report:
 Writable Name | Owner Name | Num of Times Mounted | Date Last Mounted
